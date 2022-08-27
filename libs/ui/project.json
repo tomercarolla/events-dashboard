@@ -1,0 +1,27 @@
+{
+  "projectType": "library",
+  "sourceRoot": "libs/ui/src",
+  "prefix": "talon",
+  "targets": {
+    "lint": {
+      "executor": "@nrwl/linter:eslint",
+      "outputs": [
+        "coverage/libs/ui"
+      ],
+      "options": {
+        "lintFilePatterns": [
+          "libs/ui/**/*.ts",
+          "libs/ui/**/*.html"
+        ],
+        "assets": [
+          {
+            "glob": "**/*",
+            "input": "libs/shared/assets",
+            "output": "shared-assets"
+          }
+        ]
+      }
+    }
+  },
+  "tags": []
+}

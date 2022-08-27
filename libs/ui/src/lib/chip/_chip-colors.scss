@@ -1,0 +1,28 @@
+@import 'libs/shared/styles/mixins/functions';
+
+@mixin ui-chip() {
+  :host {
+    --chip-font-color: var(--font-primary-color);
+
+    //color - default
+    --chip-default-background-color: rgba(255, 255, 255, 0.16);
+    --chip-default-circle-background-color: #919EAB;
+    --chip-default-close-icon: rgb(255, 255, 255);
+
+    //low
+    --chip-low-background-color: #3A90E5;
+
+    //medium
+    --chip-medium-background-color: #FFB547;
+
+    //high
+    --chip-high-background-color: #F06161;
+
+    @each $color in component-colors() {
+      &.color--#{$color} {
+        color: var(--chip-font-color);
+        background-color: var(--chip-#{$color}-background-color);
+      }
+    }
+  }
+}

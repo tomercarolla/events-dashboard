@@ -1,0 +1,45 @@
+@import 'libs/shared/styles/mixins/functions';
+
+@mixin theme-chip() {
+  :host {
+    --chip-font-weight: normal;
+    --chip-border: none;
+    --chip-letter-spacing: 0.5px;
+
+    //Small - 23px
+    --chip-small-padding: 0 var(--space-16);
+    --chip-small-font-size: var(--font-size-10);
+    --chip-small-line-height: 23px;
+    --chip-small-close-font-size: 6px;
+    --chip-small-circle-padding: var(--space-4);
+    --chip-small-border-radius: var(--border-radius-size-8);
+
+    //Medium - 25px
+    --chip-medium-padding: 0 20px;
+    --chip-medium-font-size: var(--font-size-13);
+    --chip-medium-line-height: 25px;
+    --chip-medium-icon-font-size: 19px;
+    --chip-medium-close-font-size: 7px;
+    --chip-medium-border-radius: var(--border-radius-size-8);
+
+    //Large - 30px
+    --chip-large-padding: 0 var(--space-20);
+    --chip-large-font-size: var(--font-size-14);
+    --chip-large-line-height: 30px;
+    --chip-large-icon-font-size: var(--font-size-12);
+    --chip-large-close-font-size: 9px;
+    --chip-large-border-radius: var(--border-radius-size-16);
+
+    letter-spacing: var(--chip-letter-spacing);
+
+    @each $size in component-sizes() {
+      &.size--#{$size} {
+        font-weight: var(--chip-font-weight);
+        padding: var(--chip-#{$size}-padding);
+        font-size: var(--chip-#{$size}-font-size);
+        line-height: var(--chip-#{$size}-line-height);
+        border-radius: var(--chip-#{$size}-border-radius);
+      }
+    }
+  }
+}

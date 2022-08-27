@@ -1,0 +1,5 @@
+<ng-content></ng-content>
+<div *ngIf="isRemovable && color === 'default'" class="close-icon" (click)="removeClicked.emit($event)">
+  <img src="shared-assets/icons/close-icon.png"/>
+</div>
+

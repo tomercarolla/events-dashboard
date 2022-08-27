@@ -1,0 +1,7 @@
+@function component-sizes() {
+  @return 'small', 'medium', 'large';
+}
+
+@function component-colors() {
+  @return 'default', 'low', 'medium', 'high';
+}

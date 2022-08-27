@@ -1,0 +1,19 @@
+@import 'chip-theme';
+@import 'chip-colors';
+
+:host {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-6);
+  white-space: nowrap;
+
+  .close-icon {
+    display: grid;
+    place-items: center;
+    cursor: pointer;
+    min-width: 20px;
+  }
+}
+
+@include theme-chip;
+@include ui-chip;
