@@ -4,6 +4,10 @@
 
 ## Quick Start
 
+## Install NPM
+
+Run `npm i` on terminal. After the installation is finished continue to next step.
+
 ## Running the json:server
 
 Run `npm run json:server` on terminal.
