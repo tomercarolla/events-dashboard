@@ -17,7 +17,7 @@
           </div>
         </mat-select-trigger>
 
-        <mat-option *ngFor="let type of eventsTypes" [value]="type">
+        <mat-option *ngFor="let type of eventsTypes" [value]="type" (click)="addFilter(eventTypesControl)">
           {{ checkEventTypeName(type) | titlecase }}
         </mat-option>
       </mat-select>

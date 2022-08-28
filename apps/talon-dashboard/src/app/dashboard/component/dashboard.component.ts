@@ -1,19 +1,14 @@
-import {
-  ChangeDetectorRef,
-  Component,
-  OnDestroy,
-  OnInit,
-  ViewChild,
-} from '@angular/core';
-import { DashboardService } from '../store/dashboard.service';
-import { map, Observable, Subscription, tap } from 'rxjs';
-import { DashboardStore } from '../store/dashboard.store';
-import { DashboardQuery } from '../store/dashboard.query';
-import { EventDetails } from '../store/event.model';
-import { MatPaginator } from '@angular/material/paginator';
-import { MatTableDataSource } from '@angular/material/table';
-import { FormControl } from '@angular/forms';
-import { MatSort } from '@angular/material/sort';
+import {Component, OnDestroy, OnInit, ViewChild,} from '@angular/core';
+import {DashboardService} from '../store/dashboard.service';
+import {map, Observable, Subscription, tap} from 'rxjs';
+import {DashboardStore} from '../store/dashboard.store';
+import {DashboardQuery} from '../store/dashboard.query';
+import {EventDetails} from '../store/event.model';
+import {MatPaginator} from '@angular/material/paginator';
+import {MatTableDataSource} from '@angular/material/table';
+import {FormControl} from '@angular/forms';
+import {MatSort} from '@angular/material/sort';
+import {HttpParams} from "@angular/common/http";
 
 @Component({
   selector: 'talon-dashboard',
@@ -46,8 +41,6 @@ export class DashboardComponent implements OnInit, OnDestroy {
       if (this._paginator instanceof MatPaginator) {
         this.dataSource.paginator = this._paginator;
       }
-
-      this.changeDetectionRef.detectChanges();
     })
   );
 
@@ -57,7 +50,11 @@ export class DashboardComponent implements OnInit, OnDestroy {
 
   getAllEventsSubscription: Subscription | null = null;
 
+  getFilteredEventsSubscription: Subscription | null = null;
+
   eventTypesControl = new FormControl([]);
+
+  filters: string[] = [];
 
   private _paginator: MatPaginator | undefined;
 
@@ -66,23 +63,39 @@ export class DashboardComponent implements OnInit, OnDestroy {
   constructor(
     private dashboardService: DashboardService,
     private dashboardStore: DashboardStore,
-    private dashboardQuery: DashboardQuery,
-    private changeDetectionRef: ChangeDetectorRef
-  ) {}
+    private dashboardQuery: DashboardQuery
+  ) {
+  }
 
   ngOnInit(): void {
-    this.getAllEvents();
-
     this.dashboardStore.update((store) => {
       return {
         ...store,
         isLoading: true,
       };
     });
+
+    this.getAllEvents();
   }
 
   ngOnDestroy(): void {
     this.getAllEventsSubscription?.unsubscribe();
+    this.getFilteredEventsSubscription?.unsubscribe();
+  }
+
+  addFilter(form: FormControl): void {
+    this.filters = form.value;
+    this.updateTableData(this.filters);
+  }
+
+  removeEventFromFilter(event: Event, eventName: string): void {
+    event.stopPropagation();
+
+    const filteredEvents = this.eventTypesControl.value as never[];
+
+    this.removeEvent(filteredEvents, eventName);
+    this.eventTypesControl.setValue(filteredEvents);
+    this.updateTableData(this.eventTypesControl.value as string[]);
   }
 
   checkEventTypeName(eventTypeName: string): string {
@@ -112,13 +125,23 @@ export class DashboardComponent implements OnInit, OnDestroy {
     return eventName;
   }
 
-  removeEventFromFilter(event: Event, eventName: string): void {
-    event.stopPropagation();
+  private updateTableData(filters: string[]): void {
+    let filterData = new HttpParams();
 
-    const filteredEvents = this.eventTypesControl.value as never[];
+    filters.forEach(item => {
+      filterData = filterData.append("eventType", item);
+    })
 
-    this.removeEvent(filteredEvents, eventName);
-    this.eventTypesControl.setValue(filteredEvents);
+    this.getFilteredEventsSubscription = this.dashboardService.getFilteredEvents(filterData).pipe(
+      tap(data => {
+        this.dashboardStore.update((store) => {
+          return {
+            ...store,
+            eventDetails: data,
+          };
+        });
+      })
+    ).subscribe();
   }
 
   private removeEvent(filteredArray: string[], eventName: string): void {
